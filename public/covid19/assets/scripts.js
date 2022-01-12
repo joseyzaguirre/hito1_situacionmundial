@@ -1,3 +1,46 @@
+(async function() {
+    const token =localStorage.getItem("token")
+    if (token == null) {
+        return
+    } else {
+        dibujarGrafico();
+        dibujarTabla();
+    
+        $("#inicio").removeClass("d-block").addClass("d-none");
+        $("#resultado").removeClass("d-none").addClass("d-block");
+    }
+})();
+
+$("#formulario").on("submit", async function(ev){
+
+    ev.preventDefault();
+    
+    const email = $("#email").val()
+    const password = $("#password").val()
+
+    const getToken = await fetch("/api/login", {
+        method: 'POST',
+        body: JSON.stringify({email, password })
+    })
+
+    const jwt = await getToken.json()
+
+    localStorage.setItem("token", jwt.token)
+    const token = localStorage.getItem("token")
+
+    if (token == jwt.token) {
+        
+        dibujarGrafico();
+        dibujarTabla();
+    
+        $("#inicio").removeClass("d-block").addClass("d-none");
+        $("#resultado").removeClass("d-none").addClass("d-block");
+    } else {
+        return;
+    }
+
+});
+
 async function getData () {
     const data = await fetch('/api/total')
     const data2 = await data.json()
@@ -78,8 +121,6 @@ async function dibujarGrafico () {
     
 }
 
-dibujarGrafico()
-
 async function dibujarTabla () {
     const paises = await getData();
     console.log(paises)
@@ -90,4 +131,3 @@ async function dibujarTabla () {
     }
 }
 
-dibujarTabla()
