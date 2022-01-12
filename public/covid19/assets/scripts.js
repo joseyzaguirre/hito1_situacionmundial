@@ -11,6 +11,14 @@
     }
 })();
 
+$("#logout").on("click", function(){
+    localStorage.clear();
+    location.reload();
+})
+$("#init").on("click", function(){
+    location.reload();
+})
+
 $("#formulario").on("submit", async function(ev){
 
     ev.preventDefault();
@@ -36,6 +44,9 @@ $("#formulario").on("submit", async function(ev){
         $("#inicio").removeClass("d-block").addClass("d-none");
         $("#resultado").removeClass("d-none").addClass("d-block");
     } else {
+        alert("Correo y/o contraseña incorrecta!")
+        localStorage.clear()
+        location.reload()
         return;
     }
 
@@ -126,7 +137,13 @@ async function dibujarTabla () {
     console.log(paises)
     for (pais of paises) {
         $("#cuerpotabla").append(`
-            <tr><td>${paises.indexOf(pais)+1}</td><td>${pais.location}</td><td>${pais.confirmed}</td><td>${pais.deaths}</td><td>Ver detalle</td></tr>
+            <tr>
+                <td>${paises.indexOf(pais)+1}</td>
+                <td>${pais.location}</td>
+                <td>${pais.confirmed}</td>
+                <td>${pais.deaths}</td>
+                <td><button type="button" data-bs-toggle="modal" data-bs-target="#exampleModal" class="btn btn-link">Ver detalle</button></td>
+            </tr>
         `)
     }
 }
