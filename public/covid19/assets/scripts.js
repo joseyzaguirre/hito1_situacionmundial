@@ -1,17 +1,14 @@
 async function getData () {
     const data = await fetch('/api/total')
     const data2 = await data.json()
-    //console.log(data2)
     const paises = data2.data
     return paises
-    //console.log(paises)
-    //const nuevo = paises.filter( pais => pais.deaths >= 10000);
-    //console.log(nuevo)
+
 }
 
 async function dibujarGrafico () {
-    const paises = await getData();
-    const paisesGrafico = paises.filter( pais => pais.deaths >= 100000);
+    const datos = await getData();
+    const paisesGrafico = datos.filter( pais => pais.deaths >= 100000);
     console.log(paisesGrafico)
 
     const confirmados = [] //dataPoints
@@ -82,3 +79,15 @@ async function dibujarGrafico () {
 }
 
 dibujarGrafico()
+
+async function dibujarTabla () {
+    const paises = await getData();
+    console.log(paises)
+    for (pais of paises) {
+        $("#cuerpotabla").append(`
+            <tr><td>${paises.indexOf(pais)+1}</td><td>${pais.location}</td><td>${pais.confirmed}</td><td>${pais.deaths}</td><td>Ver detalle</td></tr>
+        `)
+    }
+}
+
+dibujarTabla()
