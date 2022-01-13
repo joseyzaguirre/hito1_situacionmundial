@@ -15,6 +15,7 @@ $("#logout").on("click", function(){
     localStorage.clear();
     location.reload();
 })
+
 $("#init").on("click", function(){
     location.reload();
 })
@@ -142,7 +143,7 @@ async function dibujarTabla () {
                 <td>${pais.location}</td>
                 <td>${pais.confirmed}</td>
                 <td>${pais.deaths}</td>
-                <td><button type="button" data-bs-toggle="modal" data-bs-target="#exampleModal" class="btn btn-link">Ver detalle</button></td>
+                <td><button type="button" data-bs-toggle="modal" data-bs-target="#exampleModal" class="btnmodal btn btn-link">Ver detalle</button></td>
             </tr>
         `)
     }
