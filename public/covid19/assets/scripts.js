@@ -136,16 +136,92 @@ async function dibujarGrafico () {
 async function dibujarTabla () {
     const paises = await getData();
     console.log(paises)
+    let i = 1
     for (pais of paises) {
         $("#cuerpotabla").append(`
             <tr>
-                <td>${paises.indexOf(pais)+1}</td>
+                <td>${i}</td>
                 <td>${pais.location}</td>
                 <td>${pais.confirmed}</td>
                 <td>${pais.deaths}</td>
-                <td><button type="button" data-bs-toggle="modal" data-bs-target="#exampleModal" class="btnmodal btn btn-link">Ver detalle</button></td>
+                <td><button type="button" data-pais="${pais.location}" "data-bs-toggle="modal" class="btndatos btn btn-link">Ver detalle</button></td>
             </tr>
         `)
+        i++
     }
+    $(".btndatos").on("click", mostrarModal)
+
 }
+
+async function mostrarModal() {
+    let idPais = $(this).attr("data-pais")
+    let data = await fetch(`/api/countries/${idPais}`)
+    let data2 = await data.json();
+    let pais = data2.data
+    let numConfirmados = parseInt(pais.confirmed);
+    let numMuertos = parseInt(pais.deaths);
+
+    var chart2 = new CanvasJS.Chart("chartModal", {
+        animationEnabled: true,
+        title:{
+            text: `Casos Confirmados y Muertos de COVID`
+        },	
+        axisY: {
+            title: "Casos COVID confirmados",
+            titleFontColor: "#4F81BC",
+            lineColor: "#4F81BC",
+            labelFontColor: "#4F81BC",
+            tickColor: "#4F81BC"
+        },
+        axisY2: {
+            title: "Muertos COVID",
+            titleFontColor: "#C0504E",
+            lineColor: "#C0504E",
+            labelFontColor: "#C0504E",
+            tickColor: "#C0504E"
+        },	
+        toolTip: {
+            shared: true
+        },
+        legend: {
+            cursor:"pointer",
+            itemclick: toggleDataSeries
+        },
+        data: [{
+            type: "column",
+            name: "Casos COVID confirmados",
+            legendText: "Casos COVID confirmados",
+            showInLegend: true, 
+            dataPoints: [
+                { label: `hola`, y:numConfirmados },
+            ]
+        },
+        {
+            type: "column",	
+            name: "Número de muertos por COVID",
+            legendText: "Número de muertos por COVID",
+            axisYType: "secondary",
+            showInLegend: true,
+            dataPoints: [
+                { label: `${pais.location}`, y:numMuertos },
+            ]
+        }]
+    });
+    chart2.render();
+    
+    function toggleDataSeries(e) {
+        if (typeof(e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
+            e.dataSeries.visible = false;
+        }
+        else {
+            e.dataSeries.visible = true;
+        }
+        chart.render();
+    }
+
+    $('#exampleModalLabel').html(`${pais.location}`);
+    $('#modalito').modal('show'); 
+
+}
+
 
